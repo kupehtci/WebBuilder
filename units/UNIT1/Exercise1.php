@@ -1,0 +1,10 @@
+<html>
+<head>
+	<title>Exercise1</title>
+</head>
+<body>
+    <?php
+        echo"<p>hello</p>"; 
+    ?>
+</body>
+</html>

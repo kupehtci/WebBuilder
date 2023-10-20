@@ -1,0 +1,15 @@
+
+
+.file_read{
+    background-color: aquamarine;
+    margin-left: 10px;
+}
+
+.file_read_text{
+    background-color: rgb(195, 114, 114);
+    border-radius:0.5rem; 
+    max-width: 70%;
+    color:white; 
+    text-align: left;
+    justify-content: flex-start;
+}

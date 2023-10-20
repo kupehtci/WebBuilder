@@ -1,0 +1,11 @@
+ul {
+    list-style-type: none;
+}
+
+li {
+    margin: 5px 0;
+}
+
+.active {
+    font-weight: bold;
+}
