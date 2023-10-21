@@ -13,3 +13,59 @@
     text-align: left;
     justify-content: flex-start;
 }
+
+
+.home_title{
+    color: orange;
+    justify-content: left;
+}
+
+.home_text{
+    color: rgb(53, 58, 59);
+    justify-content: left;
+}
+
+.main_section{
+    /* This is needed to put the aside at the left side of the webpage */
+    display: flex;
+}
+
+main{
+    flex:1;     /*Web content gets all space avaliable */
+}
+
+
+/* BUTTONS FOR SELECTING BETWEEN OPTIONS */
+
+.options-section{
+    
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem; 
+}
+
+.option-link{
+    background-color: orange;
+    border: 1px solid black; 
+    border-radius:0.5rem; 
+    color:black; 
+    text-align: center;
+    justify-content: center;
+    margin: 10px;
+    padding: 10px;
+    width: 100%;
+
+}
+
+.download-button{
+    background-color: orange;
+    border: 1px solid black; 
+    border-radius:0.5rem; 
+    width: max-content; 
+    color:black; 
+    text-align: center;
+    justify-content: center;
+    margin: 10px;
+    padding: 10px;
+}

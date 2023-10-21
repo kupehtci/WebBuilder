@@ -11,13 +11,12 @@
     
     ?>
     <?php
-        require_once './Navbar.php'; 
-        require_once './main.php';
-        require_once './Tree.php'; 
+        require_once "./main.php"; 
 
         $webBuilder = new WebBuilder(); 
-        $webBuilder->Build(); 
+        $webBuilder->BuildAll(); 
     ?>
+
 
     
 </body>

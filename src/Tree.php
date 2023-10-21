@@ -1,7 +1,7 @@
 <?php
 
 class Tree{
-    private $result = ""; 
+    public $result = ""; 
 
     public function __construct(){
 
@@ -15,16 +15,6 @@ class Tree{
         $this->result .= $newConcatenatedResult;
     }
 
-    public function Build(){
-        
-
-        $this->AddToResult("<aside>");
-        $this->AddToResult("<h2>Folder Tree</h2>");
-        $this->AddToResult("</aside>"); 
-
-        $this->EchoResult(); 
-    }
-
     public function EchoResult(){
         if( $this->result == ""){
             echo "<p>Incomplete result for showing</p>"; 
@@ -33,9 +23,17 @@ class Tree{
             echo $this->result;
         }
     }
+
+    public function Build(){
+        
+
+        $this->AddToResult("<aside>");
+        $this->AddToResult("Tree aside");
+        $this->AddToResult("</aside>"); 
+    }
+
+    
 }
 
-$tree_aside = new Tree(); 
-$tree_aside->Build();
 
 ?>
