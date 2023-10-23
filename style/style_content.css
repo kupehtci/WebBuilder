@@ -44,6 +44,12 @@ main{
 
 }
 
+.download-section{
+    background-color: #a77ee6; 
+    text-align: center;
+    align-self: center;
+}
+
 .download-button{
     background-color: orange;
     border: 1px solid black; 

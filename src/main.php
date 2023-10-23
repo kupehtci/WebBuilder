@@ -1,21 +1,23 @@
 <?php
-        // INCLUDE SECTION 
-        require_once './Navbar.php'; 
-        require_once './Tree.php';  
-        require_once './downloadController.php'; 
-        require_once './footer.php'; 
+    // INCLUDE SECTION 
+    require_once './Navbar.php'; 
+    require_once './Tree.php';  
+    require_once './downloadController.php'; 
+    require_once './footer.php'; 
 
-        // Function to print the message in the console using JS
-        function ConsoleLog($message){
-            echo "<script>console.log('$message');</script>"; 
-        }
+    // INCLUDE THE FILES FROM SYNTAX HIGHLIGHTER
+    require_once("../vendor/scrivo/Highlight.php/Highlight/Autoloader.php");
+    spl_autoload_register("\\Highlight\\Autoloader::load");
+
+    // Function to print the message in the console using JS
+    function ConsoleLog($message){
+        echo "<script>console.log('$message');</script>"; 
+    }
 
 
 
     // Main class that builds the web by combining navbar, aside tree, content and footer
     class WebBuilder{
-
-        private $web_name = "Daniel Laplana Portfolio";
         public $web_links = ""; 
         public $web_navbar = ""; 
         public $web_tree = "";
@@ -54,6 +56,7 @@
                 $this->web_content .= "<h1 class='home_title'>This is the Home page</h1>"; 
                 $this->web_content .= "<p class='home_text'>This is the content of the home page</p>"; 
             }
+            // FILE EXPLORATION AND OPTIONSn
             else if(isset($_GET["file"]) && !isset( $_GET["page"]) && isset($_GET["option"])){
                 
                 $file = $_GET["file"];
@@ -77,16 +80,67 @@
                             $file_to_read = "../" . $file_to_read; 
                         }
                         
+                        // Get file and text highlighter
                         $content = file_get_contents($file_to_read); 
-                    
-                        if($content != false){
-                            $content_treated = nl2br(htmlspecialchars($content)); 
-                            $this->web_content .=  "<h1 class='file_read_text'> $content_treated </h1>";
-                        }
-                        else{
-                            $this->web_content .=  "<h1>File does not exist</h1>";
+
+                        $highlighter = new \Highlight\Highlighter(); 
+                        $content_highlighted = "";
+
+                        // if(str_contains($file,".css")){
+                        //     $content_highlighted = $highlighter->highlight($content);
+                        // }
+
+                        try{
                             
+                            if(str_contains($file_to_read,".php")){
+                                $highlighted = $highlighter->highlight('php', $content);
+                            }
+                            else if(str_contains($file_to_read,".css")){
+                                $highlighted = $highlighter->highlight('css', $content);
+                            }
+                            else if(str_contains($file_to_read,".html")){
+                                $highlighted = $highlighter->highlight('html', $content);
+                            }
+                            else if(str_contains($file_to_read,".js")){
+                                $highlighted = $highlighter->highlight('javascript', $content);
+                            }
+                            else if(str_contains($file_to_read,".txt")){
+                                $highlighted = $highlighter->highlight('plaintext', $content);
+                            }
+                            else if(str_contains($file_to_read,".md")){
+                                $highlighted = $highlighter->highlight('markdown', $content);
+                            }
+                            else{
+                                $this->web_content .= "<h1 class='file_read_text'> File format not supported </h1>";
+                                break; 
+                            }
+                            
+                            // If cannot be read by the highlighter, show the content as it is
+                            if($highlighted->value == ""){
+                                $content_treated = nl2br(htmlspecialchars($content)); 
+                                $this->web_content .=  "<h1 class='file_read_text'> $content_treated </h1>";
+                                break; 
+                            }
+
+                            $this->web_content .= "<pre class='file_read_text'><code class=\"hljs {$highlighted->language}\">";
+                            $this->web_content .=  $highlighted->value;
+                            $this->web_content .=  "</code></pre>";
                         }
+                        catch(DomainException $excep){
+                            $this->web_content .=   "<pre class='file_read_text'><code>";
+                            $this->web_content .=   htmlentities($content);
+                            $this->web_content .=   "</code></pre>";
+                            echo "<script class='error'>Error: {$excep->getMessage()}</script>";
+                        }
+
+                        // if($content != false){
+                        //     $content_treated = nl2br(htmlspecialchars($content)); 
+                        //     $this->web_content .=  "<h1 class='file_read_text'> $content_treated </h1>";
+                        // }
+                        // else{
+                        //     $this->web_content .=  "<h1>File does not exist</h1>";
+                            
+                        // }
 
                         break; 
                     case 1:     // Show file execution option
@@ -104,11 +158,12 @@
                         // external-content is used in css to prevent the execution of the css code from the file and only show the output
                         break; 
                     case 2:     // Download file option
-                        
+                        $this->web_content .= "<div class='download-section'>";
                         $this->web_content .= "<form method='post' action=''>"; 
                         $this->web_content .= "<button class='download-button' type='submit' name='download' value='$file'>Download File</button></form>"; 
                         $this->web_content .= "<form method='post' action=''>"; 
                         $this->web_content .= "<button class='download-button' type='submit' name='downloadZIP' value='$file'>Download folder as ZIP</button></form>"; 
+                        $this->web_content .= "</div>"; 
 
                         break; 
                     default: 
@@ -122,7 +177,6 @@
             }
         }
 
-        // Build teh navbar section 
         public function BuildNavbar(){
             $navBar = new Navbar();  
             $navBar->Build(); 
@@ -146,6 +200,9 @@
             $downloadController->Build();
         }
 
+        /**
+         * Links all the css and builds all the web page sections
+         */
         private function GroupWebSections(){
             $this->LinkAllCSS();
             $this->BuildNavbar();
@@ -155,6 +212,9 @@
             $this->BuildDownloadController(); 
         }
 
+        /**
+         * Build all the sections of the web page and echo them
+         */
         public function BuildAll(){
             
             // Group all the sections and echo them
