@@ -46,35 +46,38 @@
             
             if (isset($_GET['page']) && !isset( $_GET['file'] )) {
                 $value = $_GET['page'];
-                ConsoleLog("You provided the value $value"); 
             } 
-            else {
+
+            // HOME PAGE
+            if(!isset($_GET["file"]) && !isset($_GET["page"])){     
                 $this->web_content .= "<h1 class='home_title'>This is the Home page</h1>"; 
                 $this->web_content .= "<p class='home_text'>This is the content of the home page</p>"; 
-                ConsoleLog("WebBuilder class is home");
             }
-
-            if(isset($_GET["file"]) && !isset( $_GET["page"]) && isset($_GET["option"])){
+            else if(isset($_GET["file"]) && !isset( $_GET["page"]) && isset($_GET["option"])){
                 
                 $file = $_GET["file"];
                 $option = $_GET["option"];
-                ConsoleLog("Option: $value and option $option"); 
+                ConsoleLog("File: $file and option $option"); 
 
                 // OPTIONS SECTION FOR A FILE 
                 $this->web_content .=  "<div class='options-section'><a class='option-link' href='./index.php?file=$file&&option=0'>Show content</a>
                                         <a class='option-link' href='./index.php?file=$file&&option=1'>Execute files</a>
-                                        <a class='option-link' href='./index.php?file=$file&&option=2'>Download file</a>
-                                        <a class='option-link' href='./index.php?file=$file&&option=3'>Download exercise as ZIP</a></div>";
+                                        <a class='option-link' href='./index.php?file=$file&&option=2'>Download</a></div>"; 
+                $this->web_content .= "<hr>";   // Horizontal line to separate options from content
 
                 // DEPENDING ON OPTION, SHOW DIFFERENT CONTENT
                 switch ($_GET["option"]){
 
                     case 0: // Show content option
-                                
-                        $file_to_read = "../" . $_GET["file"]; 
+                        
+                        // Add ../ relative path if it is not already there
+                        $file_to_read = $file;
+                        if(!str_contains($file , "../")){
+                            $file_to_read = "../" . $file_to_read; 
+                        }
+                        
                         $content = file_get_contents($file_to_read); 
-                        //$this->web_content .= "Content: $content"; 
-
+                    
                         if($content != false){
                             $content_treated = nl2br(htmlspecialchars($content)); 
                             $this->web_content .=  "<h1 class='file_read_text'> $content_treated </h1>";
@@ -86,20 +89,30 @@
 
                         break; 
                     case 1:     // Show file execution option
-                        
+                        $file_to_read = $file; 
+                        if(!str_contains($file , "../")){
+                            $file_to_read = "../" . $file_to_read; 
+                        }
+                        ob_start(); 
+                        require_once "$file_to_read"; 
+                        $output = ob_get_clean();
+                        $this->web_content .= "<h1 class ='output-title'>OUTPUT</h1>";
+                        $this->web_content .= "<div class='file-execution-output'>
+                                    <div class='external-content'>$output</div>
+                                    </div>";
+                        // external-content is used in css to prevent the execution of the css code from the file and only show the output
                         break; 
                     case 2:     // Download file option
                         
                         $this->web_content .= "<form method='post' action=''>"; 
-                        $file = "units/UNIT1/Exercise1.php";
-                        $this->web_content .= "<hr><button class='download-button' type='submit' name='download' value='$file'>Download File</button></form>"; 
-                        $this->web_content .=  "<h1>DOWNLOAD FILE CONTENT</h1>"; 
+                        $this->web_content .= "<button class='download-button' type='submit' name='download' value='$file'>Download File</button></form>"; 
+                        $this->web_content .= "<form method='post' action=''>"; 
+                        $this->web_content .= "<button class='download-button' type='submit' name='downloadZIP' value='$file'>Download folder as ZIP</button></form>"; 
 
                         break; 
-                    case 3:     // Download Exercise option 
-                        
                     default: 
-                        ConsoleLog("No option value");
+                        $option_choosen = $_GET["option"];
+                        ConsoleLog("No option value for option $option_choosen");
                         break; 
                 }
             }

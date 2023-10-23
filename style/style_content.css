@@ -1,20 +1,6 @@
 
 
-.file_read{
-    background-color: aquamarine;
-    margin-left: 10px;
-}
-
-.file_read_text{
-    background-color: rgb(195, 114, 114);
-    border-radius:0.5rem; 
-    max-width: 70%;
-    color:white; 
-    text-align: left;
-    justify-content: flex-start;
-}
-
-
+/* >HOME SECTION  */
 .home_title{
     color: orange;
     justify-content: left;
@@ -34,15 +20,15 @@ main{
     flex:1;     /*Web content gets all space avaliable */
 }
 
-
 /* BUTTONS FOR SELECTING BETWEEN OPTIONS */
 
 .options-section{
-    
+    /* background-color: #bb9cec;  */
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 1rem; 
+    height: 2rem;
 }
 
 .option-link{
@@ -69,3 +55,58 @@ main{
     margin: 10px;
     padding: 10px;
 }
+
+.file_read{
+    background-color: aquamarine;
+    margin-left: 10px;
+}
+
+.file_read_text{
+    background-color: #ff669a;
+    color:black; 
+    border-radius:0.5rem; 
+
+    text-align: left;
+    justify-content: flex-start;
+
+    max-width: 70%;
+    padding: 1rem; 
+}
+
+/* Result output when executing the exercise that is selected */
+
+.output-title{
+    background-color: #a77ee6; 
+    color: black; 
+    border-radius: 0.5rem; 
+    
+    width: max-content; 
+    padding:0.3rem; 
+    border-bottom: 2px solid black; 
+
+    text-align: left;
+}
+
+.file-execution-output{
+    background-color: #a77ee6;
+    border-radius:0.5rem; 
+    border-bottom: 2px solid black; 
+    
+
+    text-align: left;
+    justify-content: flex-start;
+
+    max-width: 70%;
+    padding: 1rem;
+}
+
+/* prevent the content of an html output from an exercise to inherit the css from main webpage */
+.external-content{
+    all:initial; 
+}
+
+.file-execution-output, .file_read_text{
+    white-space: pre-wrap;
+    box-shadow:  0.6rem 0.6rem 0.4rem grey;
+}
+
