@@ -1,10 +1,5 @@
 
 <?php
-
-    $web_root = $_SERVER['DOCUMENT_ROOT']; 
-    $relative_root = $_SERVER['PATH_INFO']; 
-    $own_dir = __DIR__; 
-    $own_file_dir = dirname(__FILE__); 
     class Navbar{
 
         public $root_folder = "../units";
@@ -27,8 +22,6 @@
 
         public function Build() {
             
-            global $own_file_dir; 
-
             $this->AddToResult("<nav> <ul>");       // Starts navigation
 
             // Initial dropdown for index and other main pages

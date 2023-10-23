@@ -15,6 +15,7 @@
     // Main class that builds the web by combining navbar, aside tree, content and footer
     class WebBuilder{
 
+        private $web_name = "Daniel Laplana Portfolio";
         public $web_links = ""; 
         public $web_navbar = ""; 
         public $web_tree = "";

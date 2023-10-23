@@ -60,6 +60,8 @@ aside .nav-item{
 aside .tree-dropdown{
     border: 1px solid black; 
     border-radius: 1rem; 
+
+    margin-right: 0.3rem; 
 }
 
 aside .tree-dropdown-item{

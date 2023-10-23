@@ -28,6 +28,25 @@ class Tree{
         }
     }
 
+    // Depending on $item extension, returns a different icon
+    private function GenerateIcon($item){
+        $icon = ""; 
+        if(str_contains($item, ".php")){
+            $icon = "<img src='../style/icons/php.png' class='icon'>"; 
+        }
+        else if(str_contains($item, ".html")){
+            $icon = "<img src='../style/icons/html.png' class='icon'>"; 
+        }
+        else if(str_contains($item, ".css")){
+            $icon = "<img src = '../style/icons/css.png' class='icon'> "; 
+        }
+        else if(str_contains($item,".txt") || str_contains($item, ".md")){
+            $icon = "<img src = '../style/icons/txt.png' class='icon'>"; 
+        }
+
+        return $icon; 
+    }
+
     private function MakeDirectoryTree($path, $file_selected){
         // If file is selected, show content
         if(isset($_GET["file"])){
@@ -53,17 +72,9 @@ class Tree{
                     else
                     {
                         // Change icon depending on item file format 
-                        $icon = ""; 
-                        if(str_contains($item, ".php")){
-                            $icon = "<img src='../style/icons/php.png' class='icon'>"; 
-                        }
-                        else if(str_contains($item, ".html")){
-                            $icon = "<img src='../style/icons/html.png' class='icon'>"; 
-                        }
-                        else if(str_contains($item, ".css")){
-                            $icon = "<img src = '../style/icons/css.png' class='icon'> "; 
-                        }
-
+                        $icon = $this->GenerateIcon($item); 
+                        
+                        
                         $file_selected = basename($file_selected);
 
                         if($item == $file_selected){

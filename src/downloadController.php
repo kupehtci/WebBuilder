@@ -21,8 +21,6 @@
             echo "<script> console.log('DOWNLOADING from $file') </script>"; 
 
             if(file_exists($file)){
-
-                
                 echo "<script> console.log('FILE EXISTS')</script>"; 
                 
                 // Define the header of the file 
