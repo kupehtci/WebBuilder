@@ -4,6 +4,8 @@
     require_once './Tree.php';  
     require_once './downloadController.php'; 
     require_once './footer.php'; 
+    require_once './highlightController.php';
+    require_once './PagesController.php'; 
 
     // INCLUDE THE FILES FROM SYNTAX HIGHLIGHTER
     require_once("../vendor/scrivo/Highlight.php/Highlight/Autoloader.php");
@@ -39,7 +41,7 @@
             $css_files = scandir($this->css_root_folder);
             
             foreach($css_files as $file){
-                if($file != "." && $file != ".."){
+                if($file != "." && $file != ".." && !is_dir($file)){
                     $this->web_links .=  "<link rel='stylesheet' type='text/css' href='$this->css_root_folder/$file'>"; 
                 }
             }
@@ -49,14 +51,26 @@
             
             if (isset($_GET['page']) && !isset( $_GET['file'] )) {
                 $value = $_GET['page'];
+                switch($value){
+                    case "home": 
+                        $this->web_content .= PagesController::Home(); 
+                        break; 
+                    case "contact":
+                        $this->web_content .= PagesController::Contact(); 
+                        break;
+                    default: 
+                        $this->web_content .= PagesController::Home(); 
+                        ConsoleLog("No page value for page $value , presented home"); 
+                        break;
+                }
             } 
 
             // HOME PAGE
             if(!isset($_GET["file"]) && !isset($_GET["page"])){     
-                $this->web_content .= "<h1 class='home_title'>This is the Home page</h1>"; 
-                $this->web_content .= "<p class='home_text'>This is the content of the home page</p>"; 
+                // HOME WEB PAGE 
+                $this->web_content .= PagesController::Home(); 
             }
-            // FILE EXPLORATION AND OPTIONSn
+            // FILE EXPLORATION AND OPTIONS
             else if(isset($_GET["file"]) && !isset( $_GET["page"]) && isset($_GET["option"])){
                 
                 $file = $_GET["file"];
@@ -80,89 +94,44 @@
                             $file_to_read = "../" . $file_to_read; 
                         }
                         
-                        // Get file and text highlighter
-                        $content = file_get_contents($file_to_read); 
-
-                        $highlighter = new \Highlight\Highlighter(); 
-                        $content_highlighted = "";
-
-                        // if(str_contains($file,".css")){
-                        //     $content_highlighted = $highlighter->highlight($content);
-                        // }
-
-                        try{
-                            
-                            if(str_contains($file_to_read,".php")){
-                                $highlighted = $highlighter->highlight('php', $content);
-                            }
-                            else if(str_contains($file_to_read,".css")){
-                                $highlighted = $highlighter->highlight('css', $content);
-                            }
-                            else if(str_contains($file_to_read,".html")){
-                                $highlighted = $highlighter->highlight('html', $content);
-                            }
-                            else if(str_contains($file_to_read,".js")){
-                                $highlighted = $highlighter->highlight('javascript', $content);
-                            }
-                            else if(str_contains($file_to_read,".txt")){
-                                $highlighted = $highlighter->highlight('plaintext', $content);
-                            }
-                            else if(str_contains($file_to_read,".md")){
-                                $highlighted = $highlighter->highlight('markdown', $content);
-                            }
-                            else{
-                                $this->web_content .= "<h1 class='file_read_text'> File format not supported </h1>";
-                                break; 
-                            }
-                            
-                            // If cannot be read by the highlighter, show the content as it is
-                            if($highlighted->value == ""){
-                                $content_treated = nl2br(htmlspecialchars($content)); 
-                                $this->web_content .=  "<h1 class='file_read_text'> $content_treated </h1>";
-                                break; 
-                            }
-
-                            $this->web_content .= "<pre class='file_read_text'><code class=\"hljs {$highlighted->language}\">";
-                            $this->web_content .=  $highlighted->value;
-                            $this->web_content .=  "</code></pre>";
-                        }
-                        catch(DomainException $excep){
-                            $this->web_content .=   "<pre class='file_read_text'><code>";
-                            $this->web_content .=   htmlentities($content);
-                            $this->web_content .=   "</code></pre>";
-                            echo "<script class='error'>Error: {$excep->getMessage()}</script>";
-                        }
-
-                        // if($content != false){
-                        //     $content_treated = nl2br(htmlspecialchars($content)); 
-                        //     $this->web_content .=  "<h1 class='file_read_text'> $content_treated </h1>";
-                        // }
-                        // else{
-                        //     $this->web_content .=  "<h1>File does not exist</h1>";
-                            
-                        // }
-
+                        $this->web_content .= HighlightController::HighlightFileContent($file_to_read);
+                        
                         break; 
                     case 1:     // Show file execution option
-                        $file_to_read = $file; 
-                        if(!str_contains($file , "../")){
-                            $file_to_read = "../" . $file_to_read; 
+
+                        if(!str_contains($file , "../")){ $file = "../" . $file;  }
+                        
+                        // Execute the file in different ways deppending on the extension
+                        $output = ""; 
+                        if(str_contains($file, ".php") || str_contains($file, ".js") || str_contains($file, ".css"))
+                        {
+                            ob_start(); // Capture the output of the file execution
+                            require_once "$file"; 
+                            $output = ob_get_clean();
                         }
-                        ob_start(); 
-                        require_once "$file_to_read"; 
-                        $output = ob_get_clean();
+                        else if(str_contains($file, ".html") || str_contains($file, ".txt")){
+                            $output = file_get_contents($file);
+                        }
+                        else {
+                            $output = "NO OUTPUT AVALIABLE"; 
+                        }
+
+                        // Output the file execution
                         $this->web_content .= "<h1 class ='output-title'>OUTPUT</h1>";
                         $this->web_content .= "<div class='file-execution-output'>
                                     <div class='external-content'>$output</div>
                                     </div>";
                         // external-content is used in css to prevent the execution of the css code from the file and only show the output
+
                         break; 
                     case 2:     // Download file option
+                        $file = $_GET["file"];
+                        $folder_f_file = dirname($file);
                         $this->web_content .= "<div class='download-section'>";
                         $this->web_content .= "<form method='post' action=''>"; 
                         $this->web_content .= "<button class='download-button' type='submit' name='download' value='$file'>Download File</button></form>"; 
                         $this->web_content .= "<form method='post' action=''>"; 
-                        $this->web_content .= "<button class='download-button' type='submit' name='downloadZIP' value='$file'>Download folder as ZIP</button></form>"; 
+                        $this->web_content .= "<button class='download-button' type='submit' name='downloadZIP' value='$file'>Download folder $folder_f_file as ZIP</button></form>"; 
                         $this->web_content .= "</div>"; 
 
                         break; 

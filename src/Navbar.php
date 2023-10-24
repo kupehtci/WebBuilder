@@ -22,37 +22,36 @@
 
         public function Build() {
             
-            $this->AddToResult("<nav> <ul>");       // Starts navigation
+            $this->result .= "<nav> <ul>";       // Starts navigation
 
             // Initial dropdown for index and other main pages
-            $this->AddToResult("<ul class='dropdown'>");  
-            $this->AddToResult("<div class='nav-item'href='#'>X</div>"); 
-            $this->AddToResult("<div class='dropdown-content'>
+            $this->result .= "<ul class='dropdown'>";  
+            $this->result .= "<div class='nav-item'href='#'>X</div>"; 
+            $this->result .= "<div class='dropdown-content'>
             <li><a href='./index.php'>Home</a></li>
-            <li><a href=''>ALT</a></li>
-            </div> </ul>
-            ");
+            <li><a href='./index.php?page=contact'>Contact</a></li>
+            </div> </ul>";
             
             $navbar_items = scandir($this->root_folder);
             
 
             foreach($navbar_items as $item){
-                if($item != "." && $item != ".." && is_dir("$this->root_folder/$item")){
-                    $this->AddToResult("<ul class='dropdown'>");  
-                    $this->AddToResult("<div class='nav-item'href='#'>$item</div>"); 
-                    $this->AddToResult("<div class='dropdown-content'>"); 
+                if($item != "." && $item != ".." && is_dir("$this->root_folder/$item") && $item != ".DS Store"){
+                    $this->result .= "<ul class='dropdown'>";  
+                    $this->result .= "<div class='nav-item'href='#'>$item</div>"; 
+                    $this->result .= "<div class='dropdown-content'>"; 
                     
                     $sub_items = scandir("$this->root_folder/$item");
 
                     foreach($sub_items as $sub_item){
                         if($sub_item != "." && $sub_item != ".."){
-                            $this->AddToResult("<li><a href='./index.php?file=units/$item/$sub_item&&option=0'>$sub_item</a></li>"); 
+                            $this->result .= "<li><a href='./index.php?file=units/$item/$sub_item&&option=0'>$sub_item</a></li>"; 
                         }
                     }
-                    $this->AddToResult("</div> </ul>");
+                    $this->result .= "</div> </ul>";
                 }
             }
-            $this->AddToResult("</ul> </nav> <hr>"); 
+            $this->result .= "</ul> </nav> <hr>"; 
 
             return $this->result; 
         }

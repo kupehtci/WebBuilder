@@ -43,6 +43,15 @@ class Tree{
         else if(str_contains($item,".txt") || str_contains($item, ".md")){
             $icon = "<img src = '../style/icons/txt.png' class='icon'>"; 
         }
+        else if(str_contains($item, ".js") && !str_contains($item, ".json")){
+            $icon = "<img src = '../style/icons/js.png'  class='icon'>"; 
+        }
+        else if(str_contains($item, ".json")){
+            $icon = "<img src = '../style/icons/json.png' class='icon'>"; 
+        }
+        else if(str_contains($item, ".xml")){
+            $icon = "<img src = '../style/icons/xml.png' class='icon'>"; 
+        }
 
         return $icon; 
     }

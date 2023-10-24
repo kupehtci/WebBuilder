@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exercise 2 </title>
+
+    </head>
+    <body>
+<h1>HELLO PHP</h1>
+<h2>1.	Can you produce this output using single quote strings?</h2>
+
+\ at the end of the line? >>> Hello World\ 
+\’ at any point in the line? >>> Hello \’ world 
+For doing echo with a \ you need to use two back slashes \\ and a \’ to print it 
+<h2>2.	Why do I need to put double slash in “c:\\xampp”? What happens if I do not put them? </h2>
+Because first slash \is to escape as a special character and second one is to access the folder. 
+If You don’t use, can be interpreted as it is used to scape the character x. 
+<h2>3.	What can a variable store? Show the four different scalar types using var_dump. </h2>
+A variable in PHP can store: 
+•	Bolean and var_dump will print bool(True) 
+•	String and var_dump will print string(“size of string”) “Hello World”
+•	Integer and var_dump prints int(42) 
+•	Float and var_dump prints float(3.14) 
+<h2>4.	What is the difference between $variable = 1 and $variable == 1? </h2>
+Like in many languages, first one is assignment so now variable value is assigned to 1 and in the second is a comparison, the value from variable is compared with the second operator and if varible its not equal to 1 it will return false.  
+<h2>5.	Underscore is allowed in variable names ($current_user), whereas hyphens are not ($current-user). Why? (make a guess) </h2>
+Underscore _ is more legible and its interpreted as a character value. Hyphen – can be interpreted as a substract and is less legible in terms of code. 
+<h2>6.	Are variable names case-sensitive? </h2>
+In PHP, variable names are case-sensitive, otherwise function names are not case sentitive. That means that $Variable is not the same as $variable but a function called Foo() is the same as foo(). 
+<h2>7.	Can you use spaces in variable names? </h2>
+Spaces cannot be used in variable names as in other languages. This is because the interpreter takes the second value after the space as other content different from the previous one
+<h2>8.	How do you explicitly convert one variable type to another (say, a string to a number)? </h2>
+To manually cast explicitly in PHP you can: 
+•	Explict casting like $var = (int) “42”
+•	Using functions val like $var = intval(“42” )
+•	Using Set type function: 
+o	$val = “42”; settype($val,”int”)
+
+<h2>9.	What is the difference between ++$j and $j++? </h2>
+$j++ is post increment, uses the current value of $j and then is incremented.  Otherwise, ++$j firstly increments the value of $j and then its used. 
+<h2>10.	Are the operators && and and interchangeable? </h2>
+Yes, because both are used for the same, adding comparison operators together. 
+<h2>11.	Can you redefine a constant? </h2>
+If you define a constant using define(“CONSTANT_1”,31);  you cannot redefine it and its value remains constant through all code. 
+<h2>12.	When would you use the === (identity) operator? </h2>
+This operator is called strict equality and only returns true if value and type of the operator are the same. Works as == but also checks the data type. 
+I will use it to compare strict data when the type is important, because == equality operator will say that is true 5  and “5”. 
+<h2>13.	Why is a for loop more powerful than a while loop? </h2>
+In a for loop you have more control of the iterations and can use an incrementing value defined in the for. While is more flexible but can easilu create a infinite loop that can crash the script. 
+<h2>14.	What happens when there is an overflow in an integer value? To check it, create a loop that increases an “integer variable” and overflows it. Use var_dump so we can see the moment where the overflow occurs. (If you iterate from 0 it will take too much time, use the constants in PHP, slide 23, to iterate only “around” the overflow). </h2>
+It gets wrapped and enters in a cycle. For example, if the maximum value is 10.000 and it gets incremented in +1, its would wrap and convert it into -10.000. 
+
+
+
+<h2>15.	Create a script that prints a multiplication table (from 1 to 10) for a given number. </h2>
+<code>
+$num = 5; 
+$res = 0; 
+
+For($i = 1; $i <= 10; $i++){
+$res = $num * $i; 
+Echo “$num x $i = $res \n”; 
+}
+</code>
+
+<h2>16.	Modify (copy it first) the script so you can print the multiplication table of a given number but between the indexes you want (instead of 1 to 10). </h2>
+<code>
+$num = 5; 
+$res = 0; 
+$min_index = 2; 
+$max_index = 5; 
+For($i = $min_index; $i <= $max_index; $i++){
+$res = $num * $i; 
+Echo “$num x $i = $res \n”; 
+</code>
+
+<h2>17.	Modify (copy it first) again the script so it work also for negative indexes (-10,10). </h2>
+
+Don’t need to be modified, also works for negative indexes
+
+
+<h2>18.	Tables in HTML are really easy (https://www.w3schools.com/html/html_tables.asp) Can you create a loop to print the ASCII table (for each element print the integer value and the resulting char)? </h2>
+<code>
+            for($i = 0; $i <= 127; $i++){
+                $char_value = chr($i);  //Convert number into character value in ASCII
+                echo "<tr>"; 
+                echo "<td>$i</td>"; 
+                echo  "<td>$char_value</td>"; 
+                echo "</tr>"; 
+            }
+</code>
+<h2>19.	Create a loop from 0 to x that prints even numbers (I am #, an even number) and numbers that are multiple of 3 ( I am #, multiple of 3). If both conditions happen at the same time only one line should be produced (I am #, an even number multiple of 3). </h2>
+
+<code>$x = 20;   
+
+    for ($i = 0; $i <= $x; $i++) {
+        
+        if ($i % 2 == 0 && $i % 3 == 0) {
+            echo “I am $i, an even number multiple of 3";
+        } 
+        elseif ($i % 2 == 0) {
+            echo “I am $i, an even number";
+        } 
+        elseif ($i % 3 == 0) {
+            echo “I am $i, multiple of 3";
+        }
+    }</code>
+
+
+    </body>
+</html>

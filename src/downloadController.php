@@ -49,16 +49,16 @@
             $folder_name = basename($folder); 
 
             $zip = new ZipArchive(); 
-            $zip_name = "./buffer/temporal_$folder_name.zip"; 
+            $zip_name = "./buffer/tmp_$folder_name.zip"; 
 
             if($zip->open($zip_name, ZipArchive::CREATE) == TRUE){
-                
                 // Add all files from exercise into the zip file
                 $exercise_dir = "../"; 
                 $exercise_archives = scandir($exercise_dir); 
                 foreach($exercise_archives as $archive){
                     if($archive != "." && $archive != ".."){
-                        $zip->addFile($exercise_dir . $archive, $archive); 
+                        $success = $zip->addFile($archive, $archive); 
+                        echo "<script>Sucess: $success</script>"; 
                     }
                 }
 
@@ -68,14 +68,10 @@
                 header("Content-Description: File Transfer"); 
                 header("Content-Type: application/zip"); 
                 header('Content-Disposition: attachment; filename="'.basename($zip_name).'"'); 
-                header("Expires: 0"); 
-                header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
-                header("Pragma: public"); 
+                // header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
+                // header("Pragma: public"); 
                 header("Content-Length: " . filesize($zip_name)); 
-                ob_end_flush();
-
-                // Clean buffer to avoid getting also current php file code and read the file
-                ob_clean(); 
+                
 
                 readfile($zip_name); 
                 exit; 
