@@ -8,7 +8,8 @@
     require_once './PagesController.php'; 
 
     // INCLUDE THE FILES FROM SYNTAX HIGHLIGHTER
-    require_once("../vendor/scrivo/Highlight.php/Highlight/Autoloader.php");
+    require_once("../vendor/scrivo/highlight.php/Highlight/Autoloader.php");
+    
     spl_autoload_register("\\Highlight\\Autoloader::load");
 
     // Function to print the message in the console using JS
@@ -20,6 +21,7 @@
 
     // Main class that builds the web by combining navbar, aside tree, content and footer
     class WebBuilder{
+        #region Variables
         public $web_links = ""; 
         public $web_navbar = ""; 
         public $web_tree = "";
@@ -27,12 +29,25 @@
         public $web_footer = "";
         private $css_root_folder = "../style";
 
+        /**Begin of the basic html structure */
+        private $html_initial_structure = "<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Daniel Laplana Portfolio</title>
+            <meta charset='utf-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1'>
+        </head>
+        <body>"; 
+
+        /**End of the basic html structure */
+        private $html_final_structure = "</body> </html>"; 
+
+        #endregion 
 
         public function __construct(){
         }
 
         public function __destruct(){
-            // echo "WebBuilder class is unloaded";
         }
 
         // Link all CSS files stored in the root folder into the web page 
@@ -41,7 +56,7 @@
             $css_files = scandir($this->css_root_folder);
             
             foreach($css_files as $file){
-                if($file != "." && $file != ".." && !is_dir($file)){
+                if($file != "." && $file != ".." && str_contains($file,".")){
                     $this->web_links .=  "<link rel='stylesheet' type='text/css' href='$this->css_root_folder/$file'>"; 
                 }
             }
@@ -86,7 +101,7 @@
                 // DEPENDING ON OPTION, SHOW DIFFERENT CONTENT
                 switch ($_GET["option"]){
 
-                    case 0: // Show content option
+                    case 0: // SHOW THE FILE CONTENT WITHOUT EXECUTING IT
                         
                         // Add ../ relative path if it is not already there
                         $file_to_read = $file;
@@ -97,15 +112,16 @@
                         $this->web_content .= HighlightController::HighlightFileContent($file_to_read);
                         
                         break; 
-                    case 1:     // Show file execution option
+                    case 1:     // SHOW THE FILE EXECUTION OPTION 
 
                         if(!str_contains($file , "../")){ $file = "../" . $file;  }
                         
-                        // Execute the file in different ways deppending on the extension
+                        
+                        //  EXECUTE THE FILE DEPENDING ON THE EXTENSION
                         $output = ""; 
                         if(str_contains($file, ".php") || str_contains($file, ".js") || str_contains($file, ".css"))
                         {
-                            ob_start(); // Capture the output of the file execution
+                            ob_start(); 
                             require_once "$file"; 
                             $output = ob_get_clean();
                         }
@@ -188,7 +204,9 @@
             
             // Group all the sections and echo them
             $this->GroupWebSections(); 
-            $sections_joined = "$this->web_links $this->web_navbar <div class='main_section'>$this->web_tree <main>$this->web_content</main></div> $this->web_footer";
+            $sections_joined = " $this->html_initial_structure
+            $this->web_links $this->web_navbar <div class='main_section'>$this->web_tree <main>$this->web_content</main></div> $this->web_footer
+            $this->html_final_structure";
             echo "$sections_joined";  
         }
 

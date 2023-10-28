@@ -1,8 +1,6 @@
 <?php
     class DownloadController{
-        private static $auxiliarPath = "./downloads_buffer"; 
-
-        public $root_files_folder = "../units";
+        private static $auxiliarPath = "./buffer"; 
     
         public function __construct(){
             // If directory for temporary save files to download is not created, create it 
@@ -17,13 +15,10 @@
             if(!str_contains($file , "../")){
                 $file = "../" . $file; 
             }
-        
-            echo "<script> console.log('DOWNLOADING from $file') </script>"; 
-
             if(file_exists($file)){
-                echo "<script> console.log('FILE EXISTS')</script>"; 
                 
-                // Define the header of the file 
+                ob_start(); 
+                // // Define the header of the file 
                 header("Content-Description: File Transfer"); 
                 header("Content-Type: text/plain"); 
                 header('Content-Disposition: attachment; filename="'.basename($file).'"'); 
@@ -49,42 +44,53 @@
             $folder_name = basename($folder); 
 
             $zip = new ZipArchive(); 
-            $zip_name = "./buffer/tmp_$folder_name.zip"; 
+            $zip_name = "./buffer/" . time() . ".zip"; 
 
-            if($zip->open($zip_name, ZipArchive::CREATE) == TRUE){
-                // Add all files from exercise into the zip file
-                $exercise_dir = "../"; 
-                $exercise_archives = scandir($exercise_dir); 
+            if($zip->open($zip_name, ZipArchive::CREATE) === TRUE){
+
+                $exercise_archives = scandir($folder);
+
                 foreach($exercise_archives as $archive){
-                    if($archive != "." && $archive != ".."){
-                        $success = $zip->addFile($archive, $archive); 
-                        echo "<script>Sucess: $success</script>"; 
+
+                    $file_path = $folder ."/". $archive; 
+
+                    if(basename($archive) != "." && basename($archive) != ".." && file_exists($file_path)){
+                        $success = $zip->addFile($file_path); 
+                    }
+                    else if($archive != "." && $archive != ".."){
                     }
                 }
 
-                $zip->close(); 
+                $zip->close();                 
+            }
+            else{
+                echo "<script> console.log('ERROR CREATING ZIP FILE')</script>"; 
+            }
 
-                // Define the header of the file 
+            // Download the zip file
+            if(file_exists($zip_name) && filesize($zip_name) > 0){
+                ob_start(); 
+
                 header("Content-Description: File Transfer"); 
                 header("Content-Type: application/zip"); 
                 header('Content-Disposition: attachment; filename="'.basename($zip_name).'"'); 
                 // header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
                 // header("Pragma: public"); 
-                header("Content-Length: " . filesize($zip_name)); 
+                header("Content-Length: " . (string)(filesize($zip_name))); 
                 
+                ob_clean(); 
 
-                readfile($zip_name); 
+                flush(); 
+                ob_end_flush();  
+                @readfile($zip_name); 
+                unlink($zip_name);
                 exit; 
-            }
-            else{
-                echo "<script> console.log('ERROR CREATING ZIP FILE')</script>"; 
             }
         }
 
         public function Build(){
 
             // Handle download request by POST method 
-
             if(isset($_POST["download"])){
                 $this->DownloadFile($_POST["download"]);
             }
@@ -92,8 +98,5 @@
                 $this->DownloadZIP($_POST["downloadZIP"]);
             }
         }
-
-        
-
     }
 ?>

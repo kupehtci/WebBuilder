@@ -1,5 +1,4 @@
 <?php
-
 class Footer{
 
     public $result = ""; 
@@ -20,5 +19,4 @@ class Footer{
          $this->result .= "</footer>";
     }
 }
-
 ?> 

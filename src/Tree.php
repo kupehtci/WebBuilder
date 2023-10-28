@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);      // Allow to hard tyupe functions
-
 function ConsoleLogTree($message){
     echo "<script> console.log('$message')</script>"; 
 }
@@ -111,13 +110,13 @@ class Tree{
         $this->result .= "<aside>";
         $this->result .= "<h1 class='contents-title'>CONTENTS</h1>";
         
-        $this->MakeDirectoryTree("../units", $_GET["file"]);
+        if(isset($_GET["file"])){
+            $this->MakeDirectoryTree("../units", $_GET["file"]);
+        }
 
         $this->result .= "</aside>"; 
     }
 
     
 }
-
-
 ?>
